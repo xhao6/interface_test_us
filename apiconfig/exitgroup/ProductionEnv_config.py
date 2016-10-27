@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+from ApiClass import *
+
+App_a = {
+         "groups":
+             {"group_01": {"members": "TEST_testAccount222" + "," + "TEST_testAccount333",
+                           "creator": "TEST_testAccount111",
+                           "group_name": "test_groupName",
+                           "group_desc": "test_groupDesc",
+                           "group_avatar": "http://new.image.chatgame.me/api/file/avatar/2015/11/24/8/9d6463ab-4083-4b01-a416-65e4e382ad00",
+                           "group_id": "80233c8073d511e69ce5fb907fee57ba",
+                           "group_id1": "819bd16064f011e6bba7fb907fee57mm",
+                           }
+              },
+         "correct_err_code1": 401,
+         "correct_err_code2": 4019,
+         "correct_err_code3": 4001
+         }
+
+CoreServer_url  = "https://cloudus.v5.cn"
+
+############################退出群组——账号未登录#########################
+##########modules里迅增一个方法——token为空，session随意赋一个值##########
+#********** TESTCASE **********
+CoreServer_ExitGroupTest_01                 = ExitGroupTest()
+# input
+CoreServer_ExitGroupTest_01.url             = CoreServer_url + "/open/api/group/exit"
+CoreServer_ExitGroupTest_01.groupInfo         = App_a["groups"]["group_01"]
+
+# expect
+CoreServer_ExitGroupTest_01.error_code            = App_a["correct_err_code1"]
+
+##########退出群组——群组不存在##########
+############传一个错的group_id###########
+#********** TESTCASE **********
+CoreServer_ExitGroupTest_02                 = ExitGroupTest()
+# input
+CoreServer_ExitGroupTest_02.url             = CoreServer_url + "/open/api/group/exit"
+CoreServer_ExitGroupTest_02.groupInfo         = App_a["groups"]["group_01"]
+
+# expect
+CoreServer_ExitGroupTest_02.error_code            = App_a["correct_err_code2"]
+
+##########退出群组——缺少参数# ##########
+###############不传groupId# ##############
+#********** TESTCASE **********
+CoreServer_ExitGroupTest_03                 = ExitGroupTest()
+# input
+CoreServer_ExitGroupTest_03.url             = CoreServer_url + "/open/api/group/exit"
+# expect
+CoreServer_ExitGroupTest_03.error_code            = App_a["correct_err_code3"]
+
