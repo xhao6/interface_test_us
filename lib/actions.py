@@ -3,8 +3,23 @@ import urllib
 import urllib2
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
+import time
 
 #PART 1------------------------- 功能性函数包括 http处理，字符串处理等-------------------------
+# 用于连接的超时重试机制，默认允许超时两次后重试，重试前等待3秒
+def allow_retry(req, total=3):
+    trial = 0
+    res = None
+    while trial < total:
+        try:
+            res = urllib2.urlopen(req)
+            break
+        except:
+            print "Failed to connect required URL"
+            trial = trial + 1
+            time.sleep(3)
+    return res
+
 def get(url, header):
     # request headers
     req = urllib2.Request(url, None, header)
@@ -12,7 +27,8 @@ def get(url, header):
     print "***request header_get = ***\n%s" % req_header_get
 
     # send request and get response handle
-    res = urllib2.urlopen(req)
+    print "Connecting to URL" + url
+    res = allow_retry(req)
 
     # response code
     res_code = res.getcode()
@@ -46,16 +62,8 @@ def post(url, data, header):
     req_body = req.get_data()
     print "***request body = ***\n%s" % req_body
     #send request and get response handle
-    #针对国外测试，新增访问url失败重试机制
-    trial = 0
-    while trial < 3:
-        try:
-            print "______Connecting to URL"
-            res = urllib2.urlopen(req)
-            break
-        except:
-            print "Failed to connect required URL"
-            trial = trial + 1
+    print "Connecting to URL" + url
+    res = allow_retry(req)
 
     #response code
     res_code = res.getcode()
@@ -92,7 +100,8 @@ def post_upload_file(url, file, header):
     print "***request header_get = ***\n%s" % req_header_get
 
     # send request and get response handle
-    res = urllib2.urlopen(req)
+    print "Connecting to URL" + url
+    res = allow_retry(req)
 
     # response code
     res_code = res.getcode()
